@@ -109,7 +109,7 @@ LoRa technology enables:
 
 # 🔮 Future Improvements
 
-📍 GPS Tracking Integration\n
+📍 GPS Tracking Integration
 🔋 Battery-Powered System
 ☀️ Solar Power Support
 🔐 Data Encryption
