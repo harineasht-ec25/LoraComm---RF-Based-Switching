@@ -125,4 +125,4 @@ This project demonstrates the development of a reliable 📡 long-range wireless
 
 By combining custom PCB design, embedded systems, and wireless communication, this project provides a scalable solution for communication in 🌄 remote and network-deficient environments.
 
-🚀 Excited to continue improving and expanding this system further!
+🚀 Excited to continue improving and expanding this system further!!!
