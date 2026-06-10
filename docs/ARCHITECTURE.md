@@ -25,7 +25,7 @@ The LoraComm system is a bi-directional long-range wireless communication platfo
 │        │             │              │        │             │
 │ ┌────────────────┐   │              │ ┌────────────────┐   │
 │ │ LoRa Module    │   │              │ │ LoRa Module    │   │
-│ │ (SX1278)       │   │              │ │ (SX1278)       │   │
+│ │ (E220-900T22D)     │   │              │ │ (E220-900T22D) │   │
 │ └────────────────┘   │              │ └────────────────┘   │
 │        │             │              │        │             │
 │        └─ RF Out ────────────────────── RF In             │
@@ -81,7 +81,7 @@ The LoraComm system is a bi-directional long-range wireless communication platfo
 **Input**: 5V USB or battery supply
 
 **Voltage Regulation**:
-- 3.3V for ESP32 and LoRa module
+- 5V for ESP32 and LoRa module
 - Current capacity: min 500mA
 
 **Power Consumption**:
@@ -98,13 +98,7 @@ The LoraComm system is a bi-directional long-range wireless communication platfo
 - **Urban area**: 2-5 km (with obstacles)
 - **Indoor**: 50-200 meters
 
-### Data Rate
-- SF7: ~11 kbps
-- SF12: ~300 bps
-
 ### Power Consumption
 - Transmit: ~180 mA @ 20 dBm
 - Receive: ~75 mA
 - Sleep: ~1 µA
-
-For complete technical details, refer to [HARDWARE_GUIDE.md](HARDWARE_GUIDE.md) and [API_REFERENCE.md](API_REFERENCE.md).
