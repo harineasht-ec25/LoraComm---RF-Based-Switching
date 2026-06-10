@@ -1,193 +1,285 @@
-# LoraComm Setup Guide
+# 📡 LoRaComm Setup Guide
 
-## Prerequisites
+## Requirements
 
-Before you begin, ensure you have the following installed:
+Before starting, install the following:
 
-- **Arduino IDE** (v1.8.13 or later) - [Download](https://www.arduino.cc/en/software)
-- **ESP32 Board Package** for Arduino IDE
-- **LoRa Library**: `RadioHead` or `LoRaMesher`
-- **USB Driver** for ESP32 (CH340 or CP2102)
-
----
-
-## Hardware Assembly
-
-### Components Required
-
-| Component | Quantity | Notes |
-|-----------|----------|-------|
-| ESP32 Development Board | 2 | 1 for Transmitter, 1 for Receiver |
-| LoRa Module (SX1278/SX1276) | 2 | One per board |
-| Antenna (LoRa) | 2 | 433MHz or 915MHz matching module |
-| Voltage Regulator (3.3V) | 2 | For stable power |
-| USB Cable (Micro-B) | 2 | For programming |
-| Capacitors (100µF, 10µF) | 4 | Decoupling |
-| Resistors (10kΩ, 1kΩ) | 4 | Pull-ups and current limiting |
-| LEDs | 2 | Status indicators |
-| Breadboard/PCB | 2 | For prototyping or final design |
-
-### Connection Diagram
-
-#### ESP32 to LoRa Module (SX1278)
-
-| ESP32 Pin | LoRa Pin | Function |
-|-----------|----------|----------|
-| GPIO 18 | CLK | SPI Clock |
-| GPIO 23 | MOSI | SPI Data Out |
-| GPIO 19 | MISO | SPI Data In |
-| GPIO 5 | CS | Chip Select |
-| GPIO 14 | RST | Reset |
-| GPIO 26 | DIO0 | Interrupt 0 |
-| GPIO 33 | DIO1 | Interrupt 1 (Optional) |
-| GND | GND | Ground |
-| 3V3 | VCC | Power |
-
-### Wiring Steps
-
-1. **Power Section**
-   - Connect 3.3V regulator to ESP32 5V input
-   - Connect LoRa VCC to 3.3V output
-   - Add 100µF capacitor across power and GND
-
-2. **SPI Communication**
-   - Connect CLK, MOSI, MISO to specified GPIO pins
-   - Add 1kΩ current limiting resistor on CS line
-
-3. **Interrupt Pins**
-   - Connect DIO0 to GPIO 26 with pull-up resistor
-   - Connect RST to GPIO 14 with pull-up resistor
-
-4. **Status Indicator**
-   - Connect LED anode to GPIO 2 (through 220Ω resistor)
-   - Connect LED cathode to GND
+* Arduino IDE 2.x or later
+* ESP32 Board Package
+* LoRa_E220 Library by Renzo Mischianti
+* USB Driver (CP2102 / CH340 depending on ESP32 board)
 
 ---
 
-## Software Installation
+# 🔧 Hardware Configuration
 
-### Step 1: Install ESP32 Board Package
+## 📤 Transmitter Unit
 
-1. Open **Arduino IDE**
-2. Go to **File → Preferences**
-3. Add to "Additional Boards Manager URLs":
-   ```
-   https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-   ```
-4. Go to **Tools → Board → Boards Manager**
-5. Search for "ESP32" and install **esp32** by Espressif Systems
+### ESP32 ↔ E220-900T22D Connections
 
-### Step 2: Install Required Libraries
+| ESP32 Pin | E220 Pin | Function     |
+| --------- | -------- | ------------ |
+| GPIO16    | RXD      | UART RX      |
+| GPIO17    | TXD      | UART TX      |
+| GPIO18    | M0       | Mode Control |
+| GPIO5     | M1       | Mode Control |
+| GPIO4     | AUX      | Status Pin   |
+| 3.3V      | VCC      | Power        |
+| GND       | GND      | Ground       |
 
-1. Go to **Sketch → Include Library → Manage Libraries**
-2. Search and install:
-   - **RadioHead Packet Radio library** (by Mike McCauley)
-   - **Adafruit GFX Library** (optional, for display)
+### User Interface
 
-### Step 3: Configure Board Settings
-
-1. **Tools → Board**: Select "ESP32 Dev Module"
-2. **Tools → Upload Speed**: Set to 115200
-3. **Tools → Port**: Select the COM port of your ESP32
-
----
-
-## Firmware Flashing
-
-### Transmitter Setup
-
-1. Navigate to `firmware/transmitter/transmitter.ino`
-2. Open in Arduino IDE
-3. Configure parameters:
-   ```cpp
-   #define LORA_FREQ 433.0      // Frequency in MHz
-   #define TX_POWER 20          // Power in dBm (max 20)
-   #define BANDWIDTH 125000     // Bandwidth in Hz
-   ```
-4. Click **Sketch → Upload**
-5. Wait for upload completion message
-
-### Receiver Setup
-
-1. Navigate to `firmware/receiver/receiver.ino`
-2. Open in Arduino IDE
-3. Ensure **same frequency as transmitter**:
-   ```cpp
-   #define LORA_FREQ 433.0      // Must match transmitter!
-   ```
-4. Click **Sketch → Upload**
-5. Wait for upload completion message
+| Component  | ESP32 Pin |
+| ---------- | --------- |
+| Button 1   | GPIO13    |
+| Button 2   | GPIO12    |
+| Button 3   | GPIO14    |
+| Button 4   | GPIO27    |
+| Status LED | GPIO15    |
+| LCD SDA    | GPIO21    |
+| LCD SCL    | GPIO22    |
 
 ---
 
-## Testing & Verification
+## 📥 Receiver Unit
 
-### LED Test
+### ESP32 ↔ E220-900T22D Connections
 
-1. Upload `firmware/utilities/led_test.ino` to test LED functionality
-2. Both LEDs should blink every 1 second
-3. If no blink, check GPIO pin connections
+| ESP32 Pin | E220 Pin | Function     |
+| --------- | -------- | ------------ |
+| GPIO16    | RXD      | UART RX      |
+| GPIO17    | TXD      | UART TX      |
+| GPIO18    | M0       | Mode Control |
+| GPIO5     | M1       | Mode Control |
+| GPIO4     | AUX      | Status Pin   |
+| 3.3V      | VCC      | Power        |
+| GND       | GND      | Ground       |
 
-### Channel Configuration
+### Output Devices
 
-1. Upload `firmware/utilities/channel_config.ino`
-2. Open **Serial Monitor** (Ctrl+Shift+M)
-3. Set baud rate to **115200**
-4. Verify channel information displayed
+| Device     | ESP32 Pin |
+| ---------- | --------- |
+| Relay 1    | GPIO27    |
+| Relay 2    | GPIO14    |
+| Relay 3    | GPIO12    |
+| Relay 4    | GPIO13    |
+| Status LED | GPIO15    |
 
-### First Communication Test
+---
 
-1. Power on both Transmitter and Receiver boards
-2. Open **Serial Monitor** on Receiver (115200 baud)
-3. Transmitter will send test message every 2 seconds
-4. Receiver should display incoming messages in Serial Monitor
+# 📺 LCD Connections
 
-Expected output on Receiver:
-```
-[LORA] Waiting for message...
-[LORA] Message received!
-[DATA] Length: 13
-[DATA] RSSI: -45 dBm
-[DATA] SNR: 9.5 dB
-Message: Hello World!
+### 16x2 I2C LCD
+
+| LCD Pin | ESP32 Pin |
+| ------- | --------- |
+| VCC     | 5V        |
+| GND     | GND       |
+| SDA     | GPIO21    |
+| SCL     | GPIO22    |
+
+### I2C Address
+
+```cpp
+0x27
 ```
 
 ---
 
-## Troubleshooting
+# 💻 Software Installation
 
-### No Upload to ESP32
+## Step 1: Install ESP32 Board Package
 
-- **Check USB Cable**: Ensure it's a data cable, not power-only
-- **Install CH340 Driver**: If using CH340 chip [Download](https://sparks.gogo.co.nz/ch340.html)
-- **Reset ESP32**: Hold BOOT button while uploading
+1. Open Arduino IDE
+2. Go to File → Preferences
+3. Add:
 
-### LoRa Module Not Detected
+```text
+https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+```
 
-- **Check SPI Connections**: Verify CLK, MOSI, MISO pins
-- **Verify CS Pin**: Ensure GPIO 5 is not used elsewhere
-- **Reset Module**: Cycle power to LoRa module
-
-### No Message Reception
-
-- **Check Frequency**: Both boards must use same frequency
-- **Check Antenna**: Ensure antenna is properly seated
-- **Check Power Supply**: Ensure stable 3.3V to LoRa module
-- **Verify DIO0**: Check interrupt pin connection
+4. Open Boards Manager
+5. Search ESP32
+6. Install Espressif ESP32 Package
 
 ---
 
-## Next Steps
+## Step 2: Install Required Libraries
 
-- Review [HARDWARE_GUIDE.md](HARDWARE_GUIDE.md) for detailed PCB design
-- Check [API_REFERENCE.md](API_REFERENCE.md) for available functions
-- Explore [examples/](../examples/) for advanced usage
+Open:
+
+```text
+Sketch → Include Library → Manage Libraries
+```
+
+Install:
+
+```text
+LoRa_E220
+LiquidCrystal_I2C
+Wire
+```
 
 ---
 
-## Support
+# ⚙️ LoRa Configuration
 
-For issues or questions, please:
-1. Check existing [GitHub Issues](https://github.com/harineasht-ec25/LoraComm---RF-Based-Switching/issues)
-2. Create a new issue with detailed error description
-3. Include hardware configuration and code snippet
+Current project configuration:
+
+| Parameter            | Value         |
+| -------------------- | ------------- |
+| Module               | E220-900T22D  |
+| UART Baud Rate       | 9600          |
+| ESP32 Serial Monitor | 115200        |
+| LoRa Channel         | 18            |
+| Operating Mode       | MODE_0_NORMAL |
+| Address              | 0x0000        |
+
+---
+
+# 🚀 Uploading Firmware
+
+## Transmitter
+
+1. Connect ESP32 through USB.
+2. Open transmitter firmware.
+3. Select:
+
+```text
+Board : ESP32 Dev Module
+Upload Speed : 115200
+```
+
+4. Upload code.
+
+Expected Serial Output:
+
+```text
+================================
+4 CHANNEL LORA TRANSMITTER
+================================
+```
+
+---
+
+## Receiver
+
+1. Connect second ESP32.
+2. Open receiver firmware.
+3. Upload code.
+
+Expected Serial Output:
+
+```text
+================================
+4 CHANNEL LORA RECEIVER
+================================
+Receiver Ready!
+```
+
+---
+
+# 🧪 System Test
+
+## Relay Test
+
+### Button Mapping
+
+| Button   | Command | Relay   |
+| -------- | ------- | ------- |
+| Button 1 | R1      | Relay 1 |
+| Button 2 | R2      | Relay 2 |
+| Button 3 | R3      | Relay 3 |
+| Button 4 | R4      | Relay 4 |
+
+### Operation
+
+* First press → Relay ON
+* Second press → Relay OFF
+* Third press → Relay ON
+* Fourth press → Relay OFF
+
+This toggle cycle repeats indefinitely.
+
+---
+
+# 📡 Communication Test
+
+Power ON:
+
+* Transmitter
+* Receiver
+
+Press Button 1.
+
+Receiver Output:
+
+```text
+Received: R1
+Relay 1 : ON
+```
+
+Press Button 1 again.
+
+```text
+Received: R1
+Relay 1 : OFF
+```
+
+Status LED on GPIO15 blinks whenever a valid LoRa packet is received.
+
+---
+
+# 🔍 Troubleshooting
+
+## No LoRa Communication
+
+Verify:
+
+* Both modules use Channel 18
+* Both modules use 9600 UART baud rate
+* Antennas are connected
+* M0 = GPIO18
+* M1 = GPIO5
+* AUX = GPIO4
+
+---
+
+## LCD Not Working
+
+Run I2C Scanner.
+
+Expected result:
+
+```text
+I2C Device Found at 0x27
+```
+
+If blank:
+
+* Adjust contrast potentiometer
+* Verify SDA = GPIO21
+* Verify SCL = GPIO22
+
+---
+
+## ESP32 Not Uploading
+
+* Use a data USB cable
+* Check COM Port
+* Hold BOOT button during upload if required
+
+---
+
+# 📈 Future Expansion
+
+* GPS Tracking
+* Solar Power Integration
+* Mobile Application
+* Cloud Monitoring
+* LoRa Mesh Networking
+* Secure Encrypted Communication
+
+---
+
+### Built using ESP32, EBYTE E220-900T22D, Custom PCB Design and Long-Range LoRa Communication.
